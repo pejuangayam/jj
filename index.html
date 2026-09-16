@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sha PCB Homestay</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            background-image: radial-gradient(circle, #4facfe 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 18px 28px;
+            transition: all 0.3s ease;
+            position: relative;
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(120deg, #4facfe, #00f2fe);
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 80%;
+        }
+
+        nav a:hover {
+            color: #4facfe;
+        }
+
+        .hero-section {
+            position: relative;
+            height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slides img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            animation: zoomIn 8s ease-out forwards;
+        }
+
+        .slides img.active {
+            display: block;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(1.1); }
+            to { transform: scale(1); }
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.7) 0%, rgba(0, 242, 254, 0.5) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            color: white;
+            padding: 20px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .slider-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 15;
+        }
+
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slider-dot.active {
+            background: white;
+            width: 35px;
+            border-radius: 6px;
+        }
+
+        .slider button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            z-index: 15;
+            font-size: 18px;
+        }
+
+        .slider button:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .prev { left: 30px; }
+        .next { right: 30px; }
+
+        .book-now {
+            display: inline-block;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .book-now:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(37, 211, 102, 0.6);
+            animation: none;
+        }
+
+        .book-now i {
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+
+        .content {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .content h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(120deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .content > p {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto 50px;
+            line-height: 1.8;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+            margin-top: 50px;
+        }
+
+        .feature {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(79, 172, 254, 0.1);
+        }
+
+        .feature:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(79, 172, 254, 0.2);
+        }
+
+        .feature h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .feature h3 i {
+            font-size: 1.8rem;
+            background: linear-gradient(120deg, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .feature p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .feature img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-top: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .feature:hover img {
+            transform: scale(1.05);
+        }
+
+        .room-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .room-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+        }
+
+        .room-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(79, 172, 254, 0.2);
+        }
+
+        .room-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            cursor: pointer;
+        }
+
+        .room-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .room-card h3 {
+            padding: 20px 20px 10px;
+            font-size: 1.4rem;
+            color: #333;
+        }
+
+        .room-card p {
+            padding: 0 20px 25px;
+            color: #666;
+            line-height: 1.9;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 50px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            height: 280px;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(79, 172, 254, 0.3);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.15);
+        }
+
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            color: white;
+            font-size: 50px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lightbox-close:hover {
+            color: #4facfe;
+            transform: rotate(90deg);
+        }
+
+        .lightbox-prev, .lightbox-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 20px 25px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            font-size: 24px;
+        }
+
+        .lightbox-prev:hover, .lightbox-next:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-50%) scale(1.15);
+        }
+
+        .lightbox-prev { left: 40px; }
+        .lightbox-next { right: 40px; }
+
+        .attractions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .attraction-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            height: 350px;
+            background: #e0e0e0;
+        }
+
+        .attraction-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(79, 172, 254, 0.3);
+        }
+
+        .attraction-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .attraction-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .attraction-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            color: white;
+            padding: 30px 20px 20px;
+        }
+
+        .attraction-info h4 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .attraction-info h4 i {
+            color: #4facfe;
+        }
+
+        .attraction-info p {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .map-box {
+            display: flex;
+            justify-content: center;
+            margin: 40px auto;
+            max-width: 900px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .map-box iframe {
+            width: 100%;
+            height: 450px;
+            border: 0;
+        }
+
+        .contact-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .icon {
+            font-size: 28px;
+            color: #fff;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .icon.whatsapp {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+        }
+
+        .icon.facebook {
+            background: linear-gradient(135deg, #1877F2, #0C5CBD);
+        }
+
+        .icon.tiktok {
+            background: linear-gradient(135deg, #000, #333);
+        }
+
+        .icon:hover {
+            transform: translateY(-8px) scale(1.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        footer {
+            text-align: center;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            color: white;
+            padding: 30px 20px;
+            margin-top: 60px;
+            font-size: 0.95rem;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 2.5rem; }
+            .hero-content p { font-size: 1.1rem; }
+            .content h2 { font-size: 2rem; }
+            nav a { padding: 15px 18px; font-size: 13px; }
+            .slider button { padding: 12px 16px; font-size: 14px; }
+            .prev { left: 15px; }
+            .next { right: 15px; }
+            .lightbox-close { top: 20px; right: 25px; font-size: 40px; }
+            .lightbox-prev, .lightbox-next { padding: 15px 18px; font-size: 18px; }
+            .lightbox-prev { left: 15px; }
+            .lightbox-next { right: 15px; }
+            .gallery-item { height: 250px; }
+            .attraction-card { height: 300px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-pattern"></div>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#features">Features</a>
+        <a href="#rooms">Rooms</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#location">Location</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <section id="home" class="hero-section">
+        <div class="slider">
+            <div class="slides">
+                <img src="images/homestay1.jpg" alt="Homestay Photo 1" class="active">
+                <img src="images/homestay2.jpg" alt="Homestay Photo 2">
+                <img src="images/homestay3.jpeg" alt="Homestay Photo 3">
+            </div>
+            <button class="prev" onclick="prevSlide()">&#10094;</button>
+            <button class="next" onclick="nextSlide()">&#10095;</button>
+            <div class="slider-controls">
+                <div class="slider-dot active" onclick="goToSlide(0)"></div>
+                <div class="slider-dot" onclick="goToSlide(1)"></div>
+                <div class="slider-dot" onclick="goToSlide(2)"></div>
+            </div>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Sha PCB Homestay</h1>
+            <p>Comfort • Relax • Affordable Stay</p>
+            <a href="https://wa.me/60123719549?text=Hi!%20I'm%20interested%20in%20booking%20Sha%20PCB%20Homestay.%20Is%20it%20available%20on%20[date]%3F" target="_blank" class="book-now">
+                <i class="fab fa-whatsapp"></i>Book Now on WhatsApp
+            </a>
+        </div>
+    </section>
+
+    <section class="content fade-in">
+        <h2>Welcome to Sha PCB Homestay</h2>
+        <p>Enjoy a relaxing and peaceful stay surrounded by comfort and nature. Our homestay offers a clean, cozy environment with modern facilities — perfect for families, friends, or weekend getaways.</p>
+    </section>
+
+    <section id="features" class="content features fade-in">
+        <h2>Sha PCB Homestay Features</h2>
+        <p>Sha PCB Homestay is fully equipped for a safe and comfortable family stay. The house includes CCTV security and free Wi-Fi for your peace of mind.</p>
+
+        <div class="feature-list">
+            <div class="feature fade-in">
+                <h3><i class="fas fa-couch"></i> Living Areas</h3>
+                <p>Two spacious sitting rooms with sofas and tables — one near the entrance and another in the middle section — complete with an Android TV for family entertainment.</p>
+                <img src="images/3.jpg" alt="Living Area">
+            </div>
+
+            <div class="feature fade-in">
+                <h3><i class="fas fa-bed"></i> Bedrooms</h3>
+                <p>• 1 Master bedroom with queen bed, air conditioner, and ceiling fan<br>• 2 Queen bedrooms, each with air conditioner and fan (one includes a study desk)<br>• 1 Kids' bedroom with study desk, fan, and air conditioner</p>
+                <img src="images/6.jpg" alt="Bedroom">
+            </div>
+
+            <div class="feature fade-in">
+                <h3><i class="fas fa-utensils"></i> Dining & Kitchen Area</h3>
+                <p>Equipped with Coway water purifier, refrigerator, air fryer, oven, rice cooker, and bread toaster — perfect for family meals. Includes washing machine and ironing board for your convenience.</p>
+                <img src="images/12.jpg" alt="Kitchen Area">
+            </div>
+
+            <div class="feature fade-in">
+                <h3><i class="fas fa-shower"></i> Bathroom</h3>
+                <p>Clean and well-maintained shared bathroom for guests' comfort.</p>
+                <img src="images/16.jpg" alt="Bathroom">
+            </div>
+
+            <div class="feature fade-in">
+                <h3><i class="fas fa-swimming-pool"></i> Outdoor Area</h3>
+                <p>Private swimming pool, BBQ space, and a dedicated prayer zone for guests.</p>
+                <img src="images/17.jpg" alt="Outdoor Area">
+            </div>
+        </div>
+    </section>
+
+    <section id="rooms" class="content fade-in">
+        <h2>Our Rooms & Facilities</h2>
+        <div class="room-container">
+            <div class="room-card fade-in">
+                <img src="images/7.jpg" alt="Standard Room" onclick="openLightbox('images/7.jpg')">
+                <h3>Standard Room</h3>
+                <p>• Queen bed<br>• Air conditioning<br>• Private bathroom<br>• Free Wi-Fi</p>
+            </div>
+
+            <div class="room-card fade-in">
+                <img src="images/9.jpg" alt="Family Room" onclick="openLightbox('images/9.jpg')">
+                <h3>Family Room</h3>
+                <p>• 2 Queen beds<br>• Kitchenette<br>• Air conditioning<br>• TV & Wi-Fi</p>
+            </div>
+
+            <div class="room-card fade-in">
+                <img src="images/10.jpg" alt="Master Bedroom" onclick="openLightbox('images/10.jpg')">
+                <h3>Master Bedroom</h3>
+                <p>• Queen bed<br>• Air conditioner & ceiling fan<br>• Spacious wardrobe<br>• Private dressing table</p>
+            </div>
+
+            <div class="room-card fade-in">
+                <img src="images/14.jpg" alt="Kids' Room" onclick="openLightbox('images/14.jpg')">
+                <h3>Kids' Room</h3>
+                <p>• Single beds<br>• Air conditioning & fan<br>• Study desk<br>• Bright and playful design</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="content fade-in">
+        <h2>Photo Gallery</h2>
+        <p>Explore our beautiful homestay through these images</p>
+        <div class="gallery-grid">
+            <div class="gallery-item fade-in"><img src="images/homestay1.jpg" alt="Gallery 1" onclick="openLightbox('images/homestay1.jpg')"></div>
+            <div class="gallery-item fade-in"><img src="images/homestay2.jpg" alt="Gallery 2" onclick="openLightbox('images/homestay2.jpg')"></div>
+            <div class="gallery-item fade-in"><img src="images/homestay3.jpeg" alt="Gallery 3" onclick="openLightbox('images/homestay3.jpeg')"></div>
+            <div class="gallery-item fade-in"><img src="images/3.jpg" alt="Gallery 4" onclick="openLightbox('images/3.jpg')"></div>
+            <div class="gallery-item fade-in"><img src="images/5.jpg" alt="Gallery 5" onclick="openLightbox('images/5.jpg')"></div>
+            <div class="gallery-item fade-in"><img src="images/6.jpg" alt="Gallery 6" onclick="openLightbox('images/6.jpg')"></div>
+            <div class="gallery-item fade-in"><img src="images/7.jpg" alt="Gallery 7" onclick="openLightbox('images/7.jpg')"></div>
+            <div class="gallery-item fade-in"><img src="images/9.jpg" alt="Gallery 8" onclick="openLightbox('images/9.jpg')"></div>
+            <div class="gallery-item fade-in"><img src="images/10.jpg" alt="Gallery 9" onclick="openLightbox('images/10.jpg')"></div>
+            <div class="gallery-item fade-in"><img src="images/12.jpg" alt="Gallery 10" onclick="openLightbox('images/12.jpg')"></div>
+            <div class="gallery-item fade-in"><img src="images/14.jpg" alt="Gallery 11" onclick="openLightbox('images/14.jpg')"></div>
+            <div class="gallery-item fade-in"><img src="images/16.jpg" alt="Gallery 12" onclick="openLightbox('images/16.jpg')"></div>
+            <div class="gallery-item fade-in"><img src="images/17.jpg" alt="Gallery 13" onclick="openLightbox('images/17.jpg')"></div>
+        </div>
+    </section>
+
+    <section id="location" class="content fade-in">
+        <h2>Our Location</h2>
+        <p>Located just minutes away from popular attractions:<br>• 10 min from Pasar Nelayan<br>• 10 min from Restoran Terapung<br>• 5 min to Pantai Cahaya Bulan<br>• 10 min to jetty for Pulau Suri and Pulau Sri Tanjung</p>
+        
+        <div class="map-box">
+            <iframe src="https://www.google.com/maps?q=6.133333,102.233333&hl=en&z=15&output=embed" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+
+        <h3 style="margin-top: 60px; font-size: 2rem; text-align: center; color: #333;">Nearby Attractions</h3>
+        <div class="attractions-grid">
+            <div class="attraction-card fade-in">
+                <div class="attraction-info">
+                    <h4><i class="fas fa-map-marker-alt"></i> Pasar Nelayan</h4>
+                    <p>Fresh seafood market - 10 min drive</p>
+                </div>
+            </div>
+            <div class="attraction-card fade-in">
+                <div class="attraction-info">
+                    <h4><i class="fas fa-map-marker-alt"></i> Pantai Cahaya Bulan</h4>
+                    <p>Beautiful beach - 5 min drive</p>
+                </div>
+            </div>
+            <div class="attraction-card fade-in">
+                <div class="attraction-info">
+                    <h4><i class="fas fa-map-marker-alt"></i> Restoran Terapung</h4>
+                    <p>Floating restaurant - 10 min drive</p>
+                </div>
+            </div>
+            <div class="attraction-card fade-in">
+                <div class="attraction-info">
+                    <h4><i class="fas fa-map-marker-alt"></i> Island Jetty</h4>
+                    <p>Pulau Suri & Sri Tanjung - 10 min drive</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="content fade-in">
+        <h2>Contact Us</h2>
+        <p>Book your stay or reach us easily through the links below:</p>
+        <div class="contact-buttons">
+            <a href="https://wa.me/60123719549" target="_blank" class="icon whatsapp"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=61562239192662" target="_blank" class="icon facebook"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.tiktok.com/" target="_blank" class="icon tiktok"><i class="fab fa-tiktok"></i></a>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Sha PCB Homestay. All rights reserved.</p>
+    </footer>
+
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+        <button class="lightbox-prev" onclick="event.stopPropagation(); lightboxPrev()">&#10094;</button>
+        <button class="lightbox-next" onclick="event.stopPropagation(); lightboxNext()">&#10095;</button>
+    </div>
+
+    <script>
+        // Hero Slider
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.slides img');
+        const dots = document.querySelectorAll('.slider-dot');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) slide.classList.add('active');
+            });
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+
+        function nextSlide() {
+            slideIndex = (slideIndex + 1) % slides.length;
+            showSlide(slideIndex);
+        }
+
+        function prevSlide() {
+            slideIndex = (slideIndex - 1 + slides.length) % slides.length;
+            showSlide(slideIndex);
+        }
+
+        function goToSlide(index) {
+            slideIndex = index;
+            showSlide(slideIndex);
+        }
+
+        let autoSlide = setInterval(nextSlide, 5000);
+        document.querySelector('.slider').addEventListener('mouseenter', () => clearInterval(autoSlide));
+        document.querySelector('.slider').addEventListener('mouseleave', () => autoSlide = setInterval(nextSlide, 5000));
+
+        // Lightbox
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const galleryImages = [];
+        
+        document.querySelectorAll('.gallery-item img, .room-card img').forEach(img => {
+            galleryImages.push(img.src);
+        });
+
+        let currentLightboxIndex = 0;
+
+        function openLightbox(imageSrc) {
+            lightbox.classList.add('active');
+            lightboxImg.src = imageSrc;
+            currentLightboxIndex = galleryImages.indexOf(imageSrc);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function lightboxNext() {
+            currentLightboxIndex = (currentLightboxIndex + 1) % galleryImages.length;
+            lightboxImg.src = galleryImages[currentLightboxIndex];
+        }
+
+        function lightboxPrev() {
+            currentLightboxIndex = (currentLightboxIndex - 1 + galleryImages.length) % galleryImages.length;
+            lightboxImg.src = galleryImages[currentLightboxIndex];
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (lightbox.classList.contains('active')) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowRight') lightboxNext();
+                if (e.key === 'ArrowLeft') lightboxPrev();
+            }
+        });
+
+        // Scroll Animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
